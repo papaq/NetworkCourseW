@@ -1043,26 +1043,26 @@ namespace NetworksCeW
 
             var unitIndexFrom = 0;
 
-            var arrOfDots = GetArrayOfDots(new Point(30, 30), new Point(width / 2 + 50, height * 2 / 3 - 100), rnd.Next(12, 14), rnd);
+            var arrOfDots = GetArrayOfDots(new Point(30, 30), new Point(width / 2 + 50, height * 2 / 3 - 100), rnd.Next(2, 3), rnd);
             arrOfSatDots[0] = arrOfDots[rnd.Next(0, arrOfDots.Length)];
 
             CompleteListOfUnitsFromArrayOfDots(arrOfDots, rnd);
-            SetSatelliteConns(unitIndexFrom, arrOfDots.Length - 1, 2, rnd);
-            ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom = arrOfDots.Length - 1);
+            //SetSatelliteConns(unitIndexFrom, arrOfDots.Length - 1, 2, rnd);
+            //ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom = arrOfDots.Length - 1);
 
-            arrOfDots = GetArrayOfDots(new Point(width / 2 + 80, 30), new Point(width, height * 2 / 3 - 100), rnd.Next(12, 14), rnd);
+            arrOfDots = GetArrayOfDots(new Point(width / 2 + 80, 30), new Point(width, height * 2 / 3 - 100), rnd.Next(2, 3), rnd);
             arrOfSatDots[1] = arrOfDots[rnd.Next(0, arrOfDots.Length)];
 
             CompleteListOfUnitsFromArrayOfDots(arrOfDots, rnd);
-            SetSatelliteConns(++unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
-            ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom = unitIndexFrom + arrOfDots.Length - 1);
+            //SetSatelliteConns(++unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
+            //ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom = unitIndexFrom + arrOfDots.Length - 1);
 
-            arrOfDots = GetArrayOfDots(new Point(width / 8, height * 2 / 3), new Point(width + 100, height - 30), rnd.Next(12, 14), rnd);
+            arrOfDots = GetArrayOfDots(new Point(width / 8, height * 2 / 3), new Point(width + 100, height - 30), rnd.Next(2, 3), rnd);
             arrOfSatDots[2] = arrOfDots[rnd.Next(0, arrOfDots.Length)];
 
             CompleteListOfUnitsFromArrayOfDots(arrOfDots, rnd);
-            SetSatelliteConns(++unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
-            ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1);
+            //SetSatelliteConns(++unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
+            //ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1);
             ReachRequiredDegree(1.75, rnd);
 
         }
@@ -1394,7 +1394,7 @@ namespace NetworksCeW
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            //CountRouts();
+
         }
 
         private void UpdateComboChooseToUnit()
@@ -1466,13 +1466,16 @@ namespace NetworksCeW
 
         private void ComboChooseToUnit_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (ComboChooseToUnit.ItemsSource == null)
+                return;
+
             switch (ComboChooseToUnit.SelectedIndex)
             {
                 case 0:
                     FillRouteInfo(-1);
                     break;
                 default:
-                    FillRouteInfo(ComboChooseToUnit.SelectedIndex);
+                    FillRouteInfo(Convert.ToInt16(ComboChooseToUnit.SelectedItem));
                     break;
             }
         }
