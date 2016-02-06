@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Windows.Shapes;
-using System.Windows.Controls;
-using System.Xml.Serialization;
 using System.Windows;
+using System.Xml.Serialization;
+using NetsCo;
 
-namespace NetsCo
+namespace NetworksCeW
 {
     internal static class FileBackup
     {

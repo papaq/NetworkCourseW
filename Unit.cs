@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Shapes;
+using NetsCo;
 
-namespace NetsCo
+namespace NetworksCeW
 {
     public class Unit
     {
         public int Index;
+        public int NetwIndex;
         public Point Position;
         public List<int> ListBindsIndexes = new List<int>();
 
@@ -24,6 +22,7 @@ namespace NetsCo
         public Unit(Unit unit)
         {
             Index = unit.Index;
+            NetwIndex = unit.NetwIndex;
             Position = new Point(unit.Position.X, unit.Position.Y);
             foreach (var index in unit.ListBindsIndexes)
                 ListBindsIndexes.Add(index);

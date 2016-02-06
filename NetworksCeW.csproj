@@ -56,9 +56,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AllStuffThatRocksCanvas.cs" />
     <Compile Include="ConnectWindow.xaml.cs">
       <DependentUpon>ConnectWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ContextMenuOpts.cs" />
     <Compile Include="Route.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="UnitWindow.xaml.cs">

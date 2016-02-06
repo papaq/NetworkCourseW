@@ -17,6 +17,8 @@ namespace NetworksCeW
     /// </summary>
     public partial class MainWindow
     {
+        private int _numOfNetw = 3;
+
         // C O N S T A N T S
 
         private const int Grgr = 20;
@@ -161,160 +163,53 @@ namespace NetworksCeW
             ListViewInfo.Items.Clear();
         }
 
-        private MenuItem AddNewItem(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "New unit",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += AddUnit_Click;
-            return item;
-        }
-
-        private MenuItem SetEditItem(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Edit unit",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += EditUnit_Click;
-            return item;
-        }
-
-        private MenuItem SetDisabledItem(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Disable unit",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += DisableUnit_Click;
-            return item;
-        }
-
-        private MenuItem SetEnabledItem(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Enable unit",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += EnableUnit_Click;
-            return item;
-        }
-
-        private MenuItem DeleteItem(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Delete unit",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += DeleteUnit_Click;
-            return item;
-        }
-
-        private MenuItem ConnectItem(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Connect",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += ConnectUnit_Click;
-            return item;
-        }
-
-        private MenuItem EditBinding(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Edit",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += EditBinding_Click;
-            return item;
-        }
-
-        private MenuItem SetDisabledBinding(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Disable binding",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += DisableBinding_Click;
-            return item;
-        }
-
-        private MenuItem SetEnabledBinding(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Enable binding",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += EnableBinding_Click;
-            return item;
-        }
-
-        private MenuItem DeleteBinding(bool enabled)
-        {
-            var item = new MenuItem
-            {
-                Header = "Delete",
-                IsEnabled = enabled,
-                Style = (Style)FindResource("ContextMenuItem")
-            };
-            item.Click += DeleteBinding_Click;
-            return item;
-        }
+       
 
         private void Set_cmUnit(Point position)
         {
-            var addItem = CheckIfAdd(position);
-            _contextMenuUnit.Items.Add(AddNewItem(addItem));
+            var addItem = AllStuffThatRocksCanvas.CheckIfAdd(position, _listOfUnits, Grgr, _currentUnitIndex); // index ?????????
+            _contextMenuUnit.Items.Add(ContextMenuOpts.AddNewItem(addItem, 
+                (Style)FindResource("ContextMenuItem"), AddUnit_Click));
 
-            _contextMenuUnit.Items.Add(SetEditItem(_rightClickUnit != -1));
+            _contextMenuUnit.Items.Add(ContextMenuOpts.SetEditItem(_rightClickUnit != -1,
+                (Style)FindResource("ContextMenuItem"), EditUnit_Click));
 
             if (_rightClickUnit != -1 && _listOfUnits[_rightClickUnit].Disabled)
-                _contextMenuUnit.Items.Add(SetEnabledItem(true));
+                _contextMenuUnit.Items.Add(ContextMenuOpts.SetEnabledItem(true,
+                    (Style)FindResource("ContextMenuItem"), EnableUnit_Click));
             else
-                _contextMenuUnit.Items.Add(SetDisabledItem(_rightClickUnit != -1));
+                _contextMenuUnit.Items.Add(ContextMenuOpts.SetDisabledItem(_rightClickUnit != -1,
+                    (Style)FindResource("ContextMenuItem"), DisableUnit_Click));
 
-            _contextMenuUnit.Items.Add(DeleteItem(_rightClickUnit != -1));
+            _contextMenuUnit.Items.Add(ContextMenuOpts.DeleteItem(_rightClickUnit != -1,
+                (Style)FindResource("ContextMenuItem"), DeleteUnit_Click));
 
-            _contextMenuUnit.Items.Add(ConnectItem(SetConnectItems()));
+            _contextMenuUnit.Items.Add(ContextMenuOpts.ConnectItem(SetConnectItems(),
+                (Style)FindResource("ContextMenuItem"), ConnectUnit_Click));
         }
 
         private void Set_cmBinding()
         {
-            _contextMenuBinding.Items.Add(EditBinding(true));
+            _contextMenuBinding.Items.Add(ContextMenuOpts.EditBinding(true, 
+                (Style)FindResource("ContextMenuItem"), EditBinding_Click));
 
             if (!_listOfBinds[_rightClickLine].Disabled)
-                _contextMenuBinding.Items.Add(SetDisabledBinding(true));
+                _contextMenuBinding.Items.Add(ContextMenuOpts.SetDisabledBinding(true, 
+                    (Style)FindResource("ContextMenuItem"), DisableBinding_Click));
             else
             {
                 var listOfCoUnitsIndexes = _listOfBinds[_rightClickLine].ListOfBothUnitsIndexes;
-                if (!GetUnitByIndex(listOfCoUnitsIndexes[0]).Disabled
-                    && !GetUnitByIndex(listOfCoUnitsIndexes[1]).Disabled)
-                    _contextMenuBinding.Items.Add(SetEnabledBinding(true));
+                if (!AllStuffThatRocksCanvas.GetUnitByIndex(listOfCoUnitsIndexes[0], _listOfUnits).Disabled
+                    && !AllStuffThatRocksCanvas.GetUnitByIndex(listOfCoUnitsIndexes[1], _listOfUnits).Disabled)
+                    _contextMenuBinding.Items.Add(ContextMenuOpts.SetEnabledBinding(true, 
+                        (Style)FindResource("ContextMenuItem"), EnableBinding_Click));
                 else
-                    _contextMenuBinding.Items.Add(SetEnabledBinding(false));
+                    _contextMenuBinding.Items.Add(ContextMenuOpts.SetEnabledBinding(false, 
+                        (Style)FindResource("ContextMenuItem"), EnableBinding_Click));
             }
 
-            _contextMenuBinding.Items.Add(DeleteBinding(true));
+            _contextMenuBinding.Items.Add(ContextMenuOpts.DeleteBinding(true, 
+                (Style)FindResource("ContextMenuItem"), DeleteBinding_Click));
         }
 
         private bool SetConnectItems()
@@ -334,63 +229,7 @@ namespace NetworksCeW
             return _connectItem1 != -1;
         }
 
-        private Unit GetUnitByIndex(int idx)
-        {
-            return _listOfUnits.Find(unit => unit.Index == idx);
-        }
-
-        private double GetDistanceBetweenPoints(Point p1, Point p2)
-        {
-            return Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
-        }
-
-        private double GetDistanceToLine(Point dot, Line line)
-        {
-            var distance = Math.Abs((line.Y2 - line.Y1) * dot.X - (line.X2 - line.X1) * dot.Y
-                                       + line.X2 * line.Y1 - line.Y2 * line.X1)
-                              / Math.Sqrt(Math.Pow(line.Y2 - line.Y1, 2) + Math.Pow(line.X2 - line.X1, 2));
-            return distance;
-        }
-
-        private int FindCircleInside(Point position)
-        {
-            foreach (var unit in _listOfUnits)
-                if (GetDistanceBetweenPoints(unit.Position, position) < Grgr * .5)
-                    return _listOfUnits.IndexOf(unit);
-            return -1;
-        }
-
-        private int FindLineClose(Point pos)
-        {
-            foreach (var line in _collectionOfLines)
-            {
-                if (GetDistanceToLine(pos, line) < 20
-                    && Math.Abs(pos.X - line.X1)
-                    + Math.Abs(pos.X - line.X2) < Math.Abs(line.X1 - line.X2) + 1
-                    && Math.Abs(pos.Y - line.Y1)
-                    + Math.Abs(pos.Y - line.Y2) < Math.Abs(line.Y1 - line.Y2) + 1)
-                    return _collectionOfLines.IndexOf(line);
-            }
-            return -1;
-        }
-
-        private bool CheckIfAdd(Point position)
-        {
-            return _listOfUnits.All(unit => !(GetDistanceBetweenPoints(unit.Position, position) <= Grgr + 5));
-        }
-
-        private bool CheckIfAlone(Point position, int myIndex)
-        {
-            return _listOfUnits.All(unit => !(GetDistanceBetweenPoints(unit.Position, position) <= Grgr + 5) || unit.Index == myIndex);
-        }
-
-        private bool CheckIfNotCloseToBorder(Point position, int myIndex)
-        {
-            if (2 > position.X - Grgr * .5 || MyCanvas.ActualWidth < position.X + Grgr * .5 + 2
-                || 2 > position.Y - Grgr * .5 || MyCanvas.ActualHeight < position.Y + Grgr * .5 + 2)
-                return false;
-            return true;
-        }
+        
 
         private void MyCanvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -424,7 +263,7 @@ namespace NetworksCeW
             return "line" + (++_currentBindIndex);
         }
 
-        private Unit PutEllipse(Point position, int nameIndex, int buffSize)
+        private Unit PutEllipse(Point position, int nameIndex, int buffSize, int netwIndex)
         {
             var ellipseGrid = new Grid
             {
@@ -466,6 +305,7 @@ namespace NetworksCeW
             return (new Unit()
             {
                 Index = nameIndex,
+                NetwIndex = netwIndex,
                 Position = position,
                 Buffer = buffSize,
             });
@@ -552,7 +392,8 @@ namespace NetworksCeW
 
         private void AddUnit(Point where)
         {
-            _listOfUnits.Add(PutEllipse(where, GridNameIndex(), Buffer));
+            _listOfUnits.Add(PutEllipse(where, GridNameIndex(), Buffer, AllStuffThatRocksCanvas.CountNetworkNumber(
+                _currentPosition, _numOfNetw, MyCanvas.ActualWidth, MyCanvas.ActualHeight)));
             _moveItem = -1;
             _connectItem1 = _connectItem2 = -1;
         }
@@ -717,8 +558,10 @@ namespace NetworksCeW
             DeleteLine(lineNumber);
 
             var listOfBothUnitsIndexes = _listOfBinds[lineNumber].ListOfBothUnitsIndexes;
-            GetUnitByIndex(listOfBothUnitsIndexes[0]).ListBindsIndexes.Remove(_listOfBinds[lineNumber].Index);
-            GetUnitByIndex(listOfBothUnitsIndexes[1]).ListBindsIndexes.Remove(_listOfBinds[lineNumber].Index);
+            AllStuffThatRocksCanvas.GetUnitByIndex(
+                listOfBothUnitsIndexes[0], _listOfUnits).ListBindsIndexes.Remove(_listOfBinds[lineNumber].Index);
+            AllStuffThatRocksCanvas.GetUnitByIndex(
+                listOfBothUnitsIndexes[1], _listOfUnits).ListBindsIndexes.Remove(_listOfBinds[lineNumber].Index);
 
             _listOfBinds.RemoveAt(lineNumber);
 
@@ -733,7 +576,7 @@ namespace NetworksCeW
 
         private void EllipseGrid_Click(object sender, MouseButtonEventArgs e)
         {
-            _moveItem = FindCircleInside(e.GetPosition(MyCanvas));
+            _moveItem = AllStuffThatRocksCanvas.FindCircleInside(e.GetPosition(MyCanvas), _listOfUnits, Grgr);
             if (_enterUnit != -1)
                 SetEllipseSize(_collectionOfUnitGrids[_enterUnit], .8);
         }
@@ -757,8 +600,8 @@ namespace NetworksCeW
         private void MainWindow1_MouseMove(object sender, MouseEventArgs e)
         {
             var currentPosition = e.GetPosition(MyCanvas);
-            _enterUnit = FindCircleInside(currentPosition);
-            _enterLine = FindLineClose(currentPosition);
+            _enterUnit = AllStuffThatRocksCanvas.FindCircleInside(currentPosition, _listOfUnits, Grgr);
+            _enterLine = AllStuffThatRocksCanvas.FindLineClose(currentPosition, _collectionOfLines);
 
             // Moving Units
 
@@ -775,7 +618,12 @@ namespace NetworksCeW
                 if (mygrd == null)
                     return;
 
-                if (!CheckIfNotCloseToBorder(currentPosition, unit.Index))
+                if (!AllStuffThatRocksCanvas.CheckIfNotCloseToBorder(
+                    currentPosition,
+                    unit.Index, 
+                    MyCanvas.ActualWidth,
+                    MyCanvas.ActualHeight,
+                    Grgr))
                 {
                     StopMoving();
                     return;
@@ -783,7 +631,7 @@ namespace NetworksCeW
 
                 var oldPosition = unit.Position;
 
-                if (!CheckIfAlone(currentPosition, unit.Index)) return;
+                if (!AllStuffThatRocksCanvas.CheckIfAlone(currentPosition, unit.Index, _listOfUnits, Grgr)) return;
                 mygrd.Margin = new Thickness(currentPosition.X - Grgr * .5, currentPosition.Y - Grgr * .5, 0, 0);
                 unit.Position = currentPosition;
 
@@ -888,11 +736,13 @@ namespace NetworksCeW
             {
                 new Info() {Category = "Unit:", Value = ""},
                 new Info() {Category = "Index", Value = unit.Index.ToString()},
+                new Info() {Category = "Netw Index", Value = unit.NetwIndex.ToString()},
                 new Info() {Category = "Status", Value = unit.Disabled ? "Disabled" : "Enabled"},
                 new Info() {Category = "Buffer", Value = unit.Buffer.ToString()},
                 new Info() {Category = "Connected by:", Value = ""},
             };
-            listInfo.AddRange(unit.ListBindsIndexes.Select(index => new Info() { Category = "", Value = index.ToString() }));
+            listInfo.AddRange(unit.ListBindsIndexes.Select(
+                index => new Info() { Category = "", Value = index.ToString() }));
 
             ListViewInfo.ItemsSource = listInfo;
         }
@@ -976,7 +826,9 @@ namespace NetworksCeW
                 var isGrey = unit1.Disabled || unit2.Disabled;
                 CreateBinding(unit1, unit2, 1, false, true, isGrey);
             }
-            else if (CheckIfAdd(e.MouseDevice.GetPosition(MyCanvas)) && Keyboard.IsKeyDown(Key.D))
+            else if (AllStuffThatRocksCanvas.CheckIfAdd(
+                e.MouseDevice.GetPosition(MyCanvas), _listOfUnits, Grgr, _currentUnitIndex) 
+                && Keyboard.IsKeyDown(Key.D))
             {
                 AddUnit(e.MouseDevice.GetPosition(MyCanvas));
             }
@@ -1043,27 +895,40 @@ namespace NetworksCeW
 
             var unitIndexFrom = 0;
 
-            var arrOfDots = GetArrayOfDots(new Point(30, 30), new Point(width / 2 + 50, height * 2 / 3 - 100), rnd.Next(2, 3), rnd);
+            var arrOfDots = GetArrayOfDots(
+                new Point(30, 30), 
+                new Point(width / 2 + 50, height * 2 / 3 - 100), 
+                rnd.Next(12, 14), rnd);
             arrOfSatDots[0] = arrOfDots[rnd.Next(0, arrOfDots.Length)];
 
             CompleteListOfUnitsFromArrayOfDots(arrOfDots, rnd);
             //SetSatelliteConns(unitIndexFrom, arrOfDots.Length - 1, 2, rnd);
-            //ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom = arrOfDots.Length - 1);
+            ReachRequiredDegree(1.75, rnd, unitIndexFrom, unitIndexFrom = arrOfDots.Length - 1);
 
-            arrOfDots = GetArrayOfDots(new Point(width / 2 + 80, 30), new Point(width, height * 2 / 3 - 100), rnd.Next(2, 3), rnd);
+            arrOfDots = GetArrayOfDots(
+                new Point(width / 2 + 80, 30),
+                new Point(width, height * 2 / 3 - 100), 
+                rnd.Next(12, 14), rnd);
             arrOfSatDots[1] = arrOfDots[rnd.Next(0, arrOfDots.Length)];
 
             CompleteListOfUnitsFromArrayOfDots(arrOfDots, rnd);
-            //SetSatelliteConns(++unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
-            //ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom = unitIndexFrom + arrOfDots.Length - 1);
+            ++unitIndexFrom;
 
-            arrOfDots = GetArrayOfDots(new Point(width / 8, height * 2 / 3), new Point(width + 100, height - 30), rnd.Next(2, 3), rnd);
+            //SetSatelliteConns(unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
+            ReachRequiredDegree(1.75, rnd, unitIndexFrom, unitIndexFrom = unitIndexFrom + arrOfDots.Length - 1);
+
+            arrOfDots = GetArrayOfDots(
+                new Point(width / 8, height * 2 / 3), 
+                new Point(width + 100, height - 30),
+                rnd.Next(12, 14), rnd);
             arrOfSatDots[2] = arrOfDots[rnd.Next(0, arrOfDots.Length)];
 
             CompleteListOfUnitsFromArrayOfDots(arrOfDots, rnd);
-            //SetSatelliteConns(++unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
-            //ReachRequiredDegree(1.5, rnd, unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1);
-            ReachRequiredDegree(1.75, rnd);
+            ++unitIndexFrom;
+
+            //SetSatelliteConns(unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1, 2, rnd);
+            ReachRequiredDegree(1.75, rnd, unitIndexFrom, unitIndexFrom + arrOfDots.Length - 1);
+            //ReachRequiredDegree(1.75, rnd);
 
         }
 
@@ -1094,7 +959,7 @@ namespace NetworksCeW
                     var badPosition = false;
 
                     for (var k = 0; k < i * dotsInHeight + j; k++)
-                        if (GetDistanceBetweenPoints(new Point(newX, newY), arr[k]) < 22)
+                        if (AllStuffThatRocksCanvas.GetDistanceBetweenPoints(new Point(newX, newY), arr[k]) < 22)
                         {
                             badPosition = true;
                             break;
@@ -1121,7 +986,12 @@ namespace NetworksCeW
             foreach (var dot in arrOfDots)
                 _listOfUnits.Add(PutEllipse(dot, GridNameIndex(), checkBoxBufferInterval.IsChecked == true
                     ? rnd.Next(Convert.ToInt16(textBoxBufferRangeFrom.Text), Convert.ToInt16(textBoxBufferRangeTo.Text))
-                    : Convert.ToInt16(textBoxBufferRangeFrom.Text)));
+                    : Convert.ToInt16(textBoxBufferRangeFrom.Text), 
+                    AllStuffThatRocksCanvas.CountNetworkNumber(
+                        _currentPosition,
+                        _numOfNetw, 
+                        MyCanvas.ActualWidth, 
+                        MyCanvas.ActualHeight)));
         }
 
         private void SetSatelliteConns(int fromUnit, int toUnit, int numOfS, Random rnd)
@@ -1137,7 +1007,8 @@ namespace NetworksCeW
                     continue;
                 CreateBinding(unit1, unit2,
                     checkBoxWeightInterval.IsChecked == true
-                        ? 3 * rnd.Next(Convert.ToInt16(textBoxWeightRangeFrom.Text), Convert.ToInt16(textBoxWeightRangeTo.Text))
+                        ? 3 * rnd.Next(Convert.ToInt16(textBoxWeightRangeFrom.Text),
+                            Convert.ToInt16(textBoxWeightRangeTo.Text))
                         : 3 * Convert.ToInt16(ConnectionWeight.Text),
                     true, true, false);
                 numOfBinds++;
@@ -1161,7 +1032,8 @@ namespace NetworksCeW
                     continue;
                 CreateBinding(unit1, unit2,
                     checkBoxWeightInterval.IsChecked == true
-                        ? rnd.Next(Convert.ToInt16(textBoxWeightRangeFrom.Text), Convert.ToInt16(textBoxWeightRangeTo.Text))
+                        ? rnd.Next(Convert.ToInt16(textBoxWeightRangeFrom.Text), 
+                            Convert.ToInt16(textBoxWeightRangeTo.Text))
                         : Convert.ToInt16(ConnectionWeight.Text),
                     false, true, false);
                 numOfBinds++;
@@ -1186,7 +1058,8 @@ namespace NetworksCeW
                     continue;
                 CreateBinding(unit1, unit2,
                     checkBoxWeightInterval.IsChecked == true
-                        ? rnd.Next(Convert.ToInt16(textBoxWeightRangeFrom.Text), Convert.ToInt16(textBoxWeightRangeTo.Text))
+                        ? rnd.Next(Convert.ToInt16(textBoxWeightRangeFrom.Text), 
+                            Convert.ToInt16(textBoxWeightRangeTo.Text))
                         : Convert.ToInt16(ConnectionWeight.Text),
                     false, true, false);
                 numOfBinds++;
@@ -1220,7 +1093,11 @@ namespace NetworksCeW
             }
 
             foreach (var unit in _listOfUnits)
-                PutEllipse(unit.Position, unit.Index, unit.Buffer);
+                PutEllipse(unit.Position, unit.Index, unit.Buffer, AllStuffThatRocksCanvas.CountNetworkNumber(
+                    _currentPosition,
+                    _numOfNetw, 
+                    MyCanvas.ActualWidth,
+                    MyCanvas.ActualHeight));
 
             foreach (var bind in _listOfBinds)
                 PutLine(bind.A, bind.B, bind.Satellite, "line" + bind.Index, bind.Disabled);
@@ -1346,7 +1223,7 @@ namespace NetworksCeW
 
             //foreach (var fromUnit in _listOfUnits.Where(unit => !unit.Disabled))
             //{
-            
+
             var fromUnit = _listOfUnits.Find(unit => unit.Index == forUnitIndex);
 
             if (fromUnit.Disabled)
@@ -1354,7 +1231,7 @@ namespace NetworksCeW
                 FillRouteInfo(-1);
                 return;
             }
-            
+
             _listOfRouteChoices.Add(new YouCanGetThere(fromUnit.Index));
             foreach (var toUnit in _listOfUnits.Where(toUnit => toUnit != fromUnit && !toUnit.Disabled))
             {
@@ -1367,6 +1244,8 @@ namespace NetworksCeW
 
         private void WalkThroughAllPaths(List<int> iWasThere, int tempWeight, Unit fromUnit, int toUnit)
         {
+            if (iWasThere.Count > 15)
+                return;
             foreach (var bindIndex in fromUnit.ListBindsIndexes)
             {
                 _counterRecursion++;
@@ -1399,7 +1278,7 @@ namespace NetworksCeW
 
         private void UpdateComboChooseToUnit()
         {
-            if (_leftClickUnit ==-1 || _listOfUnits.Count <= _leftClickUnit)
+            if (_leftClickUnit == -1 || _listOfUnits.Count <= _leftClickUnit)
             {
                 FillRouteInfo(-1);
                 return;
@@ -1417,7 +1296,7 @@ namespace NetworksCeW
                 direction => direction.ToUnitIndex.ToString()));
             ComboChooseToUnit.ItemsSource = listOfToUnits;
             ComboChooseToUnit.SelectedIndex = 0;
-            
+
             //FillRouteInfo(-1);
         }
 
